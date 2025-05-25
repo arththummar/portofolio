@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arth Thummar | AI Research & Engineering</title>
+    <style>
+        :root {
+            --primary: #0a0a0a;
+            --secondary: #121212;
+            --accent: #6e44ff;
+            --accent-dark: #5a36d1;
+            --text: #f5f5f7;
+            --text-secondary: #a1a1a6;
+            --card-bg: #1e1e1e;
+            --progress-bar: var(--accent);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        
+        /* Progress Scroll Indicator */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: var(--progress-bar);
+            width: 0%;
+            transition: width 0.1s;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+            background: var(--primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            body { font-family: 'Inter var', -apple-system, BlinkMacSystemFont, sans-serif; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+        
+        /* Header */
+        header {
+            padding: 30px 0;
+            position: fixed;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 220px 0 150px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(110, 68, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            z-index: -1;
+            animation: pulse 15s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+            100% { transform: translate(-50px, -50px); }
+        }
+        
+        .hero h1 {
+            font-size: 5.5vw;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.1;
+            background: linear-gradient(90deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.3vw;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 25px auto 40px;
+        }
+        
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .cta-button:hover {
+            background: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(110, 68, 255, 0.3);
+        }
+        
+        .cta-button.outline {
+            background: transparent;
+            border: 1px solid var(--text-secondary);
+            color: var(--text);
+            margin-left: 15px;
+        }
+        
+        .cta-button.outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: none;
+        }
+        
+        /* Experience Section */
+        .section {
+            padding: 120px 0;
+            position: relative;
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .section-heading {
+            font-size: 3.5vw;
+            font-weight: 700;
+            margin: 0 0 60px;
+            line-height: 1.2;
+        }
+        
+        .experience-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .experience-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.4s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .experience-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(110, 68, 255, 0.3);
+        }
+        
+        .experience-card h3 {
+            font-size: 22px;
+            margin: 0 0 10px;
+            font-weight: 700;
+        }
+        
+        .experience-card .company {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: inline-block;
+            font-size: 15px;
+        }
+        
+        .experience-card .date {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .experience-card ul {
+            padding-left: 0;
+            list-style: none;
+        }
+        
+        .experience-card li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-left: 25px;
+            color: var(--text-secondary);
+        }
+        
+        .experience-card li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+        
+        /* Projects Section */
+        .projects-section {
+            background: var(--secondary);
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            text-align: center;
+        }
+        
+        .contact-section .section-heading {
+            margin-bottom: 30px;
+        }
+        
+        .contact-text {
+            max-width: 600px;
+            margin: 0 auto 50px;
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 80px 0 40px;
+            text-align: center;
+            background: var(--secondary);
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+        
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, var(--accent), #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+        }
+        
+        .animated {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 7vw;
+            }
+            
+            .section-heading {
+                font-size: 5vw;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 25px;
+            }
+            
+            .hero {
+                padding: 180px 0 100px;
+            }
+            
+            .hero h1 {
+                font-size: 10vw;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-heading {
+                font-size: 8vw;
+            }
+            
+            .experience-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .cta-button.outline {
+                margin-left: 0;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Progress Scroll Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Arth Thummar</div>
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#experience">Experience</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#contact">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section id="about" class="hero">
+        <div class="container">
+            <h1 class="fade-in">Transforming data into discovery through AI research</h1>
+            <p class="fade-in">Genomics researcher at Broad Institute & Georgia Tech building the future of biological AI systems.</p>
+            <div class="cta-buttons fade-in">
+                <a href="#contact" class="cta-button">Get in touch</a>
+                <a href="#experience" class="cta-button outline">View my work</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="section">
+        <div class="container">
+            <p class="section-title animated">Experience</p>
+            <h2 class="section-heading animated">Where I've Worked</h2>
+            <div class="experience-grid">
+                <div class="experience-card fade-in">
+                    <h3>Genomics Researcher</h3>
+                    <div class="company">Broad Institute of MIT and Harvard</div>
+                    <div class="date">2023 - Present</div>
+                    <ul>
+                        <li>Built Python matrix analyzing Alzheimer's Disease correlations</li>
+                        <li>Conducting GWAS on 50k samples for Type 2 Diabetes</li>
+                        <li>Working with Unix systems and large genomic datasets</li>
+                        <li>Developing statistical models for disease prediction</li>
+                    </ul>
+                </div>
+
+                <div class="experience-card fade-in">
+                    <h3>AI Research Assistant</h3>
+                    <div class="company">Georgia Institute of Technology</div>
+                    <div class="date">2023 - Present</div>
+                    <ul>
+                        <li>Using OpenAI & Azure LLMs to optimize fish larvae growth</li>
+                        <li>Processing oceanographic data with UMiami CMS system</li>
+                        <li>Developing ML models for marine biology applications</li>
+                        <li>Implementing geospatial analysis techniques</li>
+                    </ul>
+                </div>
+
+                <div class="experience-card fade-in">
+                    <h3>Data Science Developer</h3>
+                    <div class="company">IROA Technologies</div>
+                    <div class="date">2023 - Present</div>
+                    <ul>
+                        <li>Building Shiny web interface for metabolomic data analysis</li>
+                        <li>Developing R package for drug metabolism visualization</li>
+                        <li>Working directly with CEO and Chief of Science</li>
+                        <li>Creating interactive dashboards for pharmaceutical research</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section projects-section">
+        <div class="container">
+            <p class="section-title animated">Projects</p>
+            <h2 class="section-heading animated">What I've Built</h2>
+            <div class="experience-grid">
+                <div class="experience-card fade-in">
+                    <h3>LumiSource Growth</h3>
+                    <div class="company">AI Startup</div>
+                    <ul>
+                        <li>Scaled TikTok following to 70k+</li>
+                        <li>Generated 1.2M+ impressions</li>
+                        <li>Grew user base to 50k+ via SEO</li>
+                        <li>Developed content strategy for AI education</li>
+                    </ul>
+                </div>
+
+                <div class="experience-card fade-in">
+                    <h3>Political Data Analysis</h3>
+                    <div class="company">Monmouth County Democrats</div>
+                    <ul>
+                        <li>Analyzed 16 years of election data</li>
+                        <li>GIS mapping for optimal canvassing</li>
+                        <li>200+ cold calls for volunteer recruitment</li>
+                        <li>Created predictive models for voter behavior</li>
+                    </ul>
+                </div>
+
+                <div class="experience-card fade-in">
+                <h3>BigAFadez App</h3>
+                <div class="company">Entrepreneurship</div>
+                    <ul>
+                        <li>Developed client management app for hair-cutting business</li>
+                        <li>Implemented booking/payment systems</li>
+                        <li>Scaled to 50+ active users</li>
+                    </ul>
+                    <a href="https://arththummar.github.io/bigafadez/" class="app-view-button" target="_blank">
+                        View App →
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+        <div class="container">
+            <p class="section-title animated">Contact</p>
+            <h2 class="section-heading animated">Let's Work Together</h2>
+            <p class="contact-text animated">
+                Interested in AI, genomics, or data science? Reach out for collaborations, research opportunities, or just to chat about the future of technology.
+            </p>
+            <a href="athummar169@gmail.com" class="cta-button animated">Email Me</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-logo">Arth Thummar</div>
+            <div class="footer-links">
+                <a href="https://www.linkedin.com/in/arth-thummar-1345522bb/">LinkedIn</a>
+            </div>
+            <div class="copyright">© 2025 Arth Thummar. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Progress Scroll Bar
+        window.onscroll = function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+        
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
